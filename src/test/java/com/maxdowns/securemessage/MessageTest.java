@@ -12,4 +12,11 @@ public class MessageTest {
 
         assertEquals(MessageStatus.DRAFT, message.getStatus());
     }
+
+    @Test
+    void messageShouldRetainSender(){
+        Message message = new Message("Max", "Receiver", "Received");
+
+        assertEquals("Max", message.getSender());
+    }
 }

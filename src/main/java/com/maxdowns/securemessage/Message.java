@@ -17,4 +17,9 @@ public class Message {
     public MessageStatus getStatus(){
         return status;
     }
+
+    public String getSender(){
+        return sender;
+    }
+
 }
