@@ -22,4 +22,8 @@ public class Message {
         return sender;
     }
 
+    public String getRecipient(){
+        return recipient;
+    }
+
 }
