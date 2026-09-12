@@ -53,4 +53,13 @@ public class MessageTest {
 
         assertEquals(MessageStatus.SENT, message.getStatus());
     }
+
+    @Test
+    void sentMessageShouldNotBeSentAgain(){
+        Message message = new Message("Max", "Receiver", "Hello");
+
+        message.send();
+
+        assertThrows(IllegalStateException.class, message::send); // message::send = () -> message.send()
+    }
 }

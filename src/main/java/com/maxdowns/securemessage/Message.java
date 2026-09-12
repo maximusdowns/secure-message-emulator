@@ -35,6 +35,10 @@ public class Message {
     }
 
     public void send() {
+        if (status == MessageStatus.SENT){
+            throw new IllegalStateException("Message has already been sent");
+        }
+
         status = MessageStatus.SENT;
     }
 
