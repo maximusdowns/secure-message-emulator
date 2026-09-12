@@ -5,9 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
+import java.time.Instant;
+
 
 public class MessageTest {
 
@@ -97,5 +100,19 @@ public class MessageTest {
         message.send();
 
         assertNotNull(message.getSentAt());
+    }
+
+    @Test
+    void sentMessageShouldRecordTimeItWasSent() {
+        Message message = new Message("Max", "Receiver", "Hello");
+
+        Instant beforeSend = Instant.now();
+
+        message.send();
+
+        Instant afterSend = Instant.now();
+
+        assertFalse(message.getSentAt().isBefore(beforeSend));
+        assertFalse(message.getSentAt().isAfter(afterSend));
     }
 }
