@@ -44,4 +44,13 @@ public class MessageTest {
                 new Message("Max", invalidRecipient, "Hello")
         );
     }
+
+    @Test
+    void sendingMessageShouldChangeStatusToSent(){
+        Message message = new Message("Max", "Receiver", "Hello");
+
+        message.send();
+
+        assertEquals(MessageStatus.SENT, message.getStatus());
+    }
 }

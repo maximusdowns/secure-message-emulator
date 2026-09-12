@@ -5,7 +5,7 @@ public class Message {
     private final String sender;
     private final String recipient;
     private final String body;
-    private final MessageStatus status;
+    private MessageStatus status;
 
     public Message(String sender, String recipient, String body) {
         if (recipient == null || recipient.isBlank()) {
@@ -18,20 +18,24 @@ public class Message {
         this.status = MessageStatus.DRAFT;
     }
 
-    public MessageStatus getStatus(){
+    public MessageStatus getStatus() {
         return status;
     }
 
-    public String getSender(){
+    public String getSender() {
         return sender;
     }
 
-    public String getRecipient(){
+    public String getRecipient() {
         return recipient;
     }
 
-    public String getBody(){
+    public String getBody() {
         return body;
+    }
+
+    public void send() {
+        status = MessageStatus.SENT;
     }
 
 }
