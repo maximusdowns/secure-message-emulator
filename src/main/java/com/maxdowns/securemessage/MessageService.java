@@ -7,6 +7,10 @@ public class MessageService {
     }
 
     public Message send(Message message) {
+        if (message == null) {
+            throw new IllegalArgumentException("Message cannot be null");
+        }
+
         message.send();
         return message;
     }

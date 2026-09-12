@@ -3,6 +3,7 @@ package com.maxdowns.securemessage;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MessageServiceTest {
 
@@ -50,5 +51,14 @@ public class MessageServiceTest {
         Message sentMessage = service.send(message);
 
         assertEquals(MessageStatus.SENT, sentMessage.getStatus());
+    }
+
+    @Test
+    void sendingNullMessageShouldThrowException() {
+        MessageService service = new MessageService();
+
+        assertThrows(IllegalArgumentException.class, () ->
+                service.send(null)
+        );
     }
 }
