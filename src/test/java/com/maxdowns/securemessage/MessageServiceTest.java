@@ -21,4 +21,19 @@ public class MessageServiceTest {
         assertEquals("Receiver", message.getRecipient());
         assertEquals("Hello", message.getBody());
     }
+
+    @Test
+    void sendingDraftShouldMarkMessageAsSent() {
+        MessageService service = new MessageService();
+
+        Message message = service.createDraft(
+                "Max",
+                "Receiver",
+                "Hello"
+        );
+
+        service.send(message);
+
+        assertEquals(MessageStatus.SENT, message.getStatus());
+    }
 }
