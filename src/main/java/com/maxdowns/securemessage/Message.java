@@ -8,6 +8,10 @@ public class Message {
     private MessageStatus status;
 
     public Message(String sender, String recipient, String body) {
+        if (sender == null || sender.isBlank()) {
+            throw new IllegalArgumentException("Sender cannot be blank");
+        }
+
         if (recipient == null || recipient.isBlank()) {
             throw new IllegalArgumentException("Recipient cannot be blank");
         }

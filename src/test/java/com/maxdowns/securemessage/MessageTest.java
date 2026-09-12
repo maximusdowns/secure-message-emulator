@@ -45,6 +45,15 @@ public class MessageTest {
         );
     }
 
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {" ", "   ", "\t"})
+    void messageShouldRejectBlankSender(String invalidSender) {
+        assertThrows(IllegalArgumentException.class, () ->
+                new Message(invalidSender, "Receiver", "Hello")
+        );
+    }
+
     @Test
     void sendingMessageShouldChangeStatusToSent(){
         Message message = new Message("Max", "Receiver", "Hello");
