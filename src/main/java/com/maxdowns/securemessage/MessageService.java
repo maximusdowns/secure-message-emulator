@@ -6,7 +6,8 @@ public class MessageService {
         return new Message(sender, recipient, body);
     }
 
-    public void send(Message message) {
+    public Message send(Message message) {
         message.send();
+        return message;
     }
 }

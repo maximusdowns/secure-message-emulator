@@ -36,4 +36,19 @@ public class MessageServiceTest {
 
         assertEquals(MessageStatus.SENT, message.getStatus());
     }
+
+    @Test
+    void sendingMessageShouldReturnSentMessage() {
+        MessageService service = new MessageService();
+
+        Message message = service.createDraft(
+                "Max",
+                "Receiver",
+                "Hello"
+        );
+
+        Message sentMessage = service.send(message);
+
+        assertEquals(MessageStatus.SENT, sentMessage.getStatus());
+    }
 }
