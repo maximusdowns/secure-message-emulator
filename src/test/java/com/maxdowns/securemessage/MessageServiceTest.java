@@ -9,7 +9,8 @@ public class MessageServiceTest {
 
     @Test
     void shouldCreateDraftMessage() {
-        MessageService service = new MessageService();
+        MessageRepository repository = new InMemoryMessageRepository();  //polymorphism
+        MessageService service = new MessageService(repository);  //dependency injection
 
         Message message = service.createDraft(
                 "Max",
@@ -25,7 +26,8 @@ public class MessageServiceTest {
 
     @Test
     void sendingDraftShouldMarkMessageAsSent() {
-        MessageService service = new MessageService();
+        MessageRepository repository = new InMemoryMessageRepository();
+        MessageService service = new MessageService(repository);
 
         Message message = service.createDraft(
                 "Max",
@@ -40,7 +42,8 @@ public class MessageServiceTest {
 
     @Test
     void sendingMessageShouldReturnSentMessage() {
-        MessageService service = new MessageService();
+        MessageRepository repository = new InMemoryMessageRepository();
+        MessageService service = new MessageService(repository);
 
         Message message = service.createDraft(
                 "Max",
@@ -55,10 +58,27 @@ public class MessageServiceTest {
 
     @Test
     void sendingNullMessageShouldThrowException() {
-        MessageService service = new MessageService();
+        MessageRepository repository = new InMemoryMessageRepository();
+        MessageService service = new MessageService(repository);
 
         assertThrows(IllegalArgumentException.class, () ->
                 service.send(null)
         );
+    }
+
+    @Test
+    void createdDraftShouldBeSavedInRepository() {
+        MessageRepository repository = new InMemoryMessageRepository();  //polymorphism
+        MessageService  service = new MessageService(repository);  //dependency injection
+
+        Message message = service.createDraft(
+                "Max",
+                "Receiver",
+                "Hello"
+        );
+
+        Message savedMessage = repository.findLatest();
+
+        assertEquals(message, savedMessage);
     }
 }

@@ -8,7 +8,7 @@ public class MessageRepositoryTest {
 
     @Test
     void savedMessageShouldBeRetrievable() {
-        MessageRepository repository = new InMemoryMessageRepository();
+        MessageRepository repository = new InMemoryMessageRepository();  //polymorphism - Different kinds of objects can be treated through the same common type
 
         Message message = new Message(
                 "Max",
