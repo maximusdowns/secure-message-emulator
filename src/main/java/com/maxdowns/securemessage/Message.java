@@ -16,6 +16,10 @@ public class Message {
             throw new IllegalArgumentException("Recipient cannot be blank");
         }
 
+        if (body == null || body.isBlank()) {
+            throw new IllegalArgumentException("Body cannot be blank");
+        }
+
         this.sender = sender;
         this.recipient = recipient;
         this.body = body;
