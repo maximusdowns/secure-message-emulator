@@ -1,11 +1,14 @@
 package com.maxdowns.securemessage;
 
+import java.time.Instant;
+
 public class Message {
 
     private final String sender;
     private final String recipient;
     private final String body;
     private MessageStatus status;
+    private Instant sentAt;
 
     public Message(String sender, String recipient, String body) {
         if (sender == null || sender.isBlank()) {
@@ -42,12 +45,17 @@ public class Message {
         return body;
     }
 
+    public Instant getSentAt(){
+        return sentAt;
+    }
+
     public void send() {
         if (status == MessageStatus.SENT){
             throw new IllegalStateException("Message has already been sent");
         }
 
         status = MessageStatus.SENT;
+        sentAt = Instant.now();
     }
 
 }

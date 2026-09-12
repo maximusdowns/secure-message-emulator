@@ -3,6 +3,8 @@ package com.maxdowns.securemessage;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -79,5 +81,21 @@ public class MessageTest {
         message.send();
 
         assertThrows(IllegalStateException.class, message::send); // message::send = () -> message.send()
+    }
+
+    @Test
+    void newMessageShouldNotHaveSentTimestamp() {
+        Message message = new Message("Max", "Receiver", "Hello");
+
+        assertNull(message.getSentAt());
+    }
+
+    @Test
+    void sentMessageShouldHaveSentTimestamp() {
+        Message message = new Message("Max", "Receiver", "Hello");
+
+        message.send();
+
+        assertNotNull(message.getSentAt());
     }
 }
