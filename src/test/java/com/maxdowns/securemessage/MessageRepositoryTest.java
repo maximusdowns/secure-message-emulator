@@ -120,4 +120,31 @@ public class MessageRepositoryTest {
 
         assertEquals(0, messages.size());
     }
+
+    @Test
+    void shouldFindMessagesByStatus() {
+        MessageRepository repository = new InMemoryMessageRepository();
+
+        Message draftMessage = new Message(
+                "Max",
+                "Alice",
+                "Draft message"
+        );
+
+        Message sentMessage = new Message(
+                "Max",
+                "Bob",
+                "Sent message"
+        );
+
+        sentMessage.send();
+
+        repository.save(draftMessage);
+        repository.save(sentMessage);
+
+        List<Message> sentMessages = repository.findByStatus(MessageStatus.SENT);
+
+        assertEquals(1, sentMessages.size());
+        assertEquals(sentMessage, sentMessages.get(0));
+    }
 }

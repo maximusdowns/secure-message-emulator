@@ -10,4 +10,6 @@ public interface MessageRepository {
     List<Message> findAll(); //generic
 
     List<Message> findByRecipient(String recipient);
+
+    List<Message> findByStatus(MessageStatus status);
 }

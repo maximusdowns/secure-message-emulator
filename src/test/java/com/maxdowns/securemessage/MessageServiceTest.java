@@ -152,5 +152,10 @@ public class MessageServiceTest {
         public List<Message> findByRecipient(String recipient) {
             return List.of();
         }
+
+        @Override
+        public List<Message> findByStatus(MessageStatus status) {
+            return List.of();
+        }
     }
 }

@@ -36,4 +36,16 @@ public class InMemoryMessageRepository implements MessageRepository{
         }
         return matchingMessages;
     }
+
+    @Override
+    public List<Message> findByStatus(MessageStatus status) {
+        List<Message> matchingMessages = new ArrayList<>();
+
+        for (Message message : messages){  // for each message in messages
+            if (message.getStatus() == status) {
+                matchingMessages.add((message));
+            }
+        }
+        return matchingMessages;
+    }
 }
