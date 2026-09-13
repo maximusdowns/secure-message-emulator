@@ -1,5 +1,7 @@
 package com.maxdowns.securemessage;
 
+import java.util.List;
+
 public class MessageService {
 
     private final MessageRepository repository;  //dependency inversion, we didn't need to write private final InMemoryMessageRepository repository;
@@ -26,5 +28,9 @@ public class MessageService {
         repository.save(message);
 
         return message;
+    }
+
+    public List<Message> findByRecipient(String recipient) {
+        return repository.findByRecipient(recipient);
     }
 }

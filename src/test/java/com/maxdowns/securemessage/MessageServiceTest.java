@@ -103,6 +103,22 @@ public class MessageServiceTest {
         assertEquals(2, repository.getSaveCount());
     }
 
+    @Test
+    void shouldFindMessagesForRecipient() {
+        MessageRepository repository = new InMemoryMessageRepository();
+        MessageService service = new MessageService(repository);
+
+        service.createDraft("Max", "Alice", "First");
+        service.createDraft("Max", "Bob", "Second");
+        service.createDraft("Max", "Alice", "Third");
+
+        List<Message> aliceMessages = service.findByRecipient("Alice");
+
+        assertEquals(2, aliceMessages.size());
+        assertEquals("Alice", aliceMessages.get(0).getRecipient());
+        assertEquals("Alice", aliceMessages.get(1).getRecipient());
+    }
+
     // Test Double (precursor to Mockito)
     private static class TrackingMessageRepository implements MessageRepository {
         private Message latestMessage;
