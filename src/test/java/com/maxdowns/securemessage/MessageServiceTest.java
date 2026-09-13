@@ -131,5 +131,10 @@ public class MessageServiceTest {
 
             return List.of(latestMessage); //list of latestMessage
         }
+
+        @Override
+        public List<Message> findByRecipient(String recipient) {
+            return List.of();
+        }
     }
 }

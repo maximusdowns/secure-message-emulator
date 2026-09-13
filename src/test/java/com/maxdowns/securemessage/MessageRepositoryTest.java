@@ -70,4 +70,54 @@ public class MessageRepositoryTest {
 
         assertEquals(1, repository.findAll().size());
     }
+
+    @Test
+    void shouldFindMessagesByRecipient() {
+        MessageRepository repository = new InMemoryMessageRepository();
+
+        Message aliceMessageOne = new Message(
+                "Max",
+                "Alice",
+                "First message for Alice"
+        );
+
+        Message bobMessage = new Message(
+                "Max",
+                "Bob",
+                "Message for Bob"
+        );
+
+        Message aliceMessageTwo = new Message(
+                "Max",
+                "Alice",
+                "Second message for Alice"
+        );
+
+        repository.save(aliceMessageOne);
+        repository.save(bobMessage);
+        repository.save(aliceMessageTwo);
+
+        List<Message> aliceMessages = repository.findByRecipient("Alice");
+
+        assertEquals(2, aliceMessages.size());
+        assertEquals(aliceMessageOne, aliceMessages.get(0));
+        assertEquals(aliceMessageTwo, aliceMessages.get(1));
+    }
+
+    @Test
+    void shouldReturnEmptyListWhenRecipientHasNoMessages() {
+        MessageRepository repository = new InMemoryMessageRepository();
+
+        Message message = new Message(
+                "Max",
+                "Alice",
+                "Hello Alice"
+        );
+
+        repository.save(message);
+
+        List<Message> messages = repository.findByRecipient("Charlie");
+
+        assertEquals(0, messages.size());
+    }
 }

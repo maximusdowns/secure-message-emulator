@@ -6,5 +6,8 @@ public interface MessageRepository {
     void save(Message message);
 
     Message findLatest();
+
     List<Message> findAll(); //generic
+
+    List<Message> findByRecipient(String recipient);
 }

@@ -24,4 +24,16 @@ public class InMemoryMessageRepository implements MessageRepository{
     public List<Message> findAll() {
         return new ArrayList<>(messages);  // example of defensive copy
     }
+
+    @Override
+    public List<Message> findByRecipient(String recipient) {
+        List<Message> matchingMessages = new ArrayList<>();
+
+        for (Message message : messages){  // for each message in messages
+            if (message.getRecipient().equals(recipient)) {
+                matchingMessages.add((message));
+            }
+        }
+        return matchingMessages;
+    }
 }
