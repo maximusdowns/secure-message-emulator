@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 
 import java.util.List;
 
@@ -117,6 +118,47 @@ public class MessageServiceTest {
         assertEquals(2, aliceMessages.size());
         assertEquals("Alice", aliceMessages.get(0).getRecipient());
         assertEquals("Alice", aliceMessages.get(1).getRecipient());
+    }
+
+    @Test
+    void sendingMessageShouldSaveUsingMocking() {
+        MessageRepository repository = mock(MessageRepository.class);
+        MessageService service = new MessageService(repository);
+
+        Message message = new Message(
+                "Max",
+                "Receiver",
+                "Hello"
+        );
+
+        service.send(message);
+
+        verify(repository).save(message);
+    }
+
+    @Test
+    void findByRecipientShouldReturnRepositoryResults() {
+        MessageRepository repository = mock(MessageRepository.class);
+        MessageService service = new MessageService(repository);
+
+        Message message = new Message(
+                "Max",
+                "Alice",
+                "Hello"
+        );
+
+        List<Message> expectedMessages = List.of(message);
+
+        // STUBBING — control what the dependency returns
+        when(repository.findByRecipient("Alice"))
+                .thenReturn(expectedMessages);
+
+        // ACT — run the code we're actually testing
+        List<Message> actualMessages = service.findByRecipient("Alice");
+
+        // ASSERT — verify the result
+        assertEquals(expectedMessages, actualMessages);
+        verify(repository).findByRecipient("Alice");
     }
 
     // Test Double (precursor to Mockito)
