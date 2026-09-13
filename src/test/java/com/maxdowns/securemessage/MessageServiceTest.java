@@ -81,4 +81,44 @@ public class MessageServiceTest {
 
         assertEquals(message, savedMessage);
     }
+
+    // updated to use test double
+    @Test
+    void sendingMessageShouldSaveUpdatedMessageInRepository() {
+        TrackingMessageRepository repository = new TrackingMessageRepository();
+        MessageService service = new MessageService(repository);  //Inject that repository into my service
+
+        Message message = service.createDraft(  //Create a draft through the service
+                "Max",
+                "Receiver",
+                "Hello"
+        );
+
+        assertEquals(1, repository.getSaveCount());
+
+        service.send(message);
+
+        assertEquals(2, repository.getSaveCount());
+    }
+
+    // Test Double (precursor to Mockito)
+    private static class TrackingMessageRepository implements MessageRepository {
+        private Message latestMessage;
+        private int saveCount;
+
+        @Override
+        public void save(Message message) {
+            latestMessage = message;
+            saveCount++;
+        }
+
+        @Override
+        public Message findLatest() {
+            return latestMessage;
+        }
+
+        public int getSaveCount() {
+            return saveCount;
+        }
+    }
 }

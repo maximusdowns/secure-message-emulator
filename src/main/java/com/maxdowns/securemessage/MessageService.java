@@ -23,6 +23,8 @@ public class MessageService {
         }
 
         message.send();
+        repository.save(message);
+
         return message;
     }
 }
