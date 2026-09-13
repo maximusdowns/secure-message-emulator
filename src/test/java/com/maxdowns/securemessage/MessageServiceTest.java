@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.List;
+
 public class MessageServiceTest {
 
     @Test
@@ -119,6 +121,15 @@ public class MessageServiceTest {
 
         public int getSaveCount() {
             return saveCount;
+        }
+
+        @Override
+        public List<Message> findAll() {
+            if (latestMessage == null) {
+                return List.of();  //Java way of creating an empty list
+            }
+
+            return List.of(latestMessage); //list of latestMessage
         }
     }
 }
