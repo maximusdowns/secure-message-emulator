@@ -19,12 +19,13 @@ public class MessageService {
         return message;
     }
 
+    // Tell this message to send itself, thenm ake sure its changed state is saved through the repository
     public Message send(Message message) {
         if (message == null) {
             throw new IllegalArgumentException("Message cannot be null");
         }
 
-        message.send();
+        message.send();  //Change MY state from DRAFT → SENT and record when I was sent
         repository.save(message);
 
         return message;

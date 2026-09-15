@@ -1,3 +1,10 @@
+/*
+Educational notes:
+Principal domain object
+Encapsulation: data and the behavior governing that data live together inside the object rather than outside code directly manipulating its fields
+
+ */
+
 package com.maxdowns.securemessage;
 
 import java.time.Instant;
