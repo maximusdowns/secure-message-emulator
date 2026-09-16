@@ -9,33 +9,40 @@ import java.io.InputStreamReader;
 public class MessageServer {
 
      public static void main(String[] args) {
-         try{
-             ServerSocket serverSocket = new ServerSocket(5000);  //listens on port 5000
+         try (ServerSocket serverSocket = new ServerSocket(5000)){ //listen on port 5000, managed resource
+
              System.out.println("Message server listening on port 5000");
 
-             //Blocking - execution stops until client connects
-             Socket clientSocket = serverSocket.accept();  //here is the actual conversation
+             while (true) {  //keep accepting connections
+                 //Blocking - execution stops until client connects
+                 try (Socket clientSocket = serverSocket.accept()) {  //here is the actual conversation
 
-             System.out.println("Client connected!");
+                     System.out.println("Client connected!");
 
-             // ex: wrapping - one object wraps another to add higher-level functionality
-             BufferedReader reader = new BufferedReader(
-                     new InputStreamReader(clientSocket.getInputStream())
-             );
+                     // ex: wrapping - one object wraps another to add higher-level functionality
+                     BufferedReader reader = new BufferedReader(
+                             new InputStreamReader(clientSocket.getInputStream())
+                     );
 
-             // blocking
-             String receivedMessage = reader.readLine();
+                     String receivedMessage;
 
-             Message message = MessageProtocol.deserialize(receivedMessage);
+                     // remember blocking from readline(), so this conditional is saying
+                     // Keep waiting for and reading messages from this connection. Each time a line arrives, put it into receivedMessage
+                     // Keep doing that until the client closes the connection.
+                     while ((receivedMessage = reader.readLine()) != null) {
+                         Message message = MessageProtocol.deserialize(receivedMessage);
 
-             System.out.println("Received message:");
-             System.out.println("  Sender: " + message.getSender());
-             System.out.println("  Recipient: " + message.getRecipient());
-             System.out.println("  Body: " + message.getBody());
+                         System.out.println("Received message:");
+                         System.out.println("  Sender: " + message.getSender());
+                         System.out.println("  Recipient: " + message.getRecipient());
+                         System.out.println("  Body: " + message.getBody());
+                     }
 
+                     System.out.println("Client disconnected.");
+                 }
+             }
          } catch (IOException exception) {
              System.err.println("Unable to start message server: " + exception.getMessage());
          }
-
      }
 }
