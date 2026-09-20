@@ -50,3 +50,6 @@ build/
 ### Local secrets ###
 .env
 .env.*
+
+# Local TLS/PKI material - never commit private keys or local trust stores
+security/
