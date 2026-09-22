@@ -1,12 +1,19 @@
 package com.maxdowns.securemessage;
 
-import java.net.ServerSocket;
 import java.io.IOException;
 import java.net.Socket;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import java.security.GeneralSecurityException;
+import java.nio.file.Path;
+
+
 
 public class MessageServer {
 
@@ -16,7 +23,37 @@ public class MessageServer {
          // This development server runs until the process is terminated.
          ExecutorService clientPool = Executors.newFixedThreadPool(4);
 
-         try (ServerSocket serverSocket = new ServerSocket(5000)){ //listen on port 5000, managed resource
+         String keyStorePasswordValue = System.getenv("SECURE_MESSAGE_KEYSTORE_PASSWORD");
+
+         if (keyStorePasswordValue ==null || keyStorePasswordValue.isBlank()) {
+             System.err.println(
+                     "SECURE_MESSAGE_KEYSTORE_PASSWORD environment variable is not set."
+             );
+             return;
+         }
+
+         char[] keyStorePassword = keyStorePasswordValue.toCharArray();
+
+         String keyStorePath = Path.of(System.getProperty("user.dir"), "security", "server-keystore.p12").toString();
+
+         SSLContext sslContext;  //will contain our TLS configuration
+
+         try{
+             sslContext = TlsContextFactory.createServerContext(
+                     keyStorePath,
+                     keyStorePassword
+             );
+         } catch (GeneralSecurityException | IOException exception) {
+             System.err.println(
+                     "Unable to config TLS: " + exception.getMessage()
+             );
+
+             return;
+         }
+
+         SSLServerSocketFactory socketFactory = sslContext.getServerSocketFactory();
+
+         try (SSLServerSocket serverSocket = (SSLServerSocket) socketFactory.createServerSocket(5000)){ //listen on port 5000, managed resource
 
              System.out.println("Message server listening on port 5000");
 

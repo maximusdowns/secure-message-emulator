@@ -95,6 +95,7 @@ Concepts explored so far include:
 - Threads and concurrency
 - Lambda expressions
 - Executor services and thread pools
+
 ## Security Roadmap
 
 The current TCP transport is **not encrypted**.
@@ -116,6 +117,7 @@ Future development is also planned to explore:
 - Persistent message storage
 - Cucumber/Gherkin acceptance testing
 - Continuous integration and automated code-quality checks
+
 ## Project Purpose
 
 The Secure Message Emulator is a learning and portfolio project intended to build hands-on experience with Java software engineering, testing, networking, concurrency, and secure communications.
