@@ -12,6 +12,18 @@ public class MessageClient {
 
     public static void main(String[] args) {
 
+        String keyStorePasswordValue =
+                System.getenv("SECURE_MESSAGE_KEYSTORE_PASSWORD");
+
+        if (keyStorePasswordValue == null || keyStorePasswordValue.isBlank()) {
+            System.err.println(
+                    "SECURE_MESSAGE_KEYSTORE_PASSWORD environment variable is not set."
+            );
+            return;
+        }
+
+        char[] keyStorePassword = keyStorePasswordValue.toCharArray();
+
         String trustStorePasswordValue = System.getenv("SECURE_MESSAGE_TRUSTSTORE_PASSWORD");
 
         if (trustStorePasswordValue == null || trustStorePasswordValue.isBlank()) {
@@ -24,14 +36,17 @@ public class MessageClient {
         char[] trustStorePassword = trustStorePasswordValue.toCharArray();
 
         String trustStorePath = Path.of(System.getProperty("user.dir"), "security", "client-truststore.p12").toString();
+        String keyStorePath = Path.of(System.getProperty("user.dir"), "security", "client-keystore.p12").toString();
 
         SSLContext sslContext;
 
         try {
-             sslContext = TlsContextFactory.createClientContext(
-                     trustStorePath,
-                     trustStorePassword
-             );
+            sslContext = TlsContextFactory.createClientContext(
+                    keyStorePath,
+                    keyStorePassword,
+                    trustStorePath,
+                    trustStorePassword
+            );
         } catch (GeneralSecurityException | IOException exception) {
              System.err.println(
                      "Unable to configure TLS: " + exception.getMessage()

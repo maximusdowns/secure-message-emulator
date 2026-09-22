@@ -10,36 +10,63 @@ import javax.net.ssl.SSLContext;
 
 public class TlsContextFactory {
 
-    // Step 5
-    // dev note: created after the private helpers below
     public static SSLContext createServerContext(
             String keyStorePath,
-            char[] password
+            char[] keyStorePassword,
+            String trustStorePath,
+            char[] trustStorePassword
     ) throws GeneralSecurityException, IOException {
 
-        KeyStore keyStore = loadKeyStore(keyStorePath, password);
-
-        KeyManagerFactory keyManagerFactory =
-                createKeyManagerFactory(keyStore, password);
-
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-
-        sslContext.init(
-                keyManagerFactory.getKeyManagers(), // server identity
-                null,                               // default trust managers
-                null                                // default secure randomness
+        // Load the server's own identity and private key.
+        KeyStore keyStore = loadKeyStore(
+                keyStorePath,
+                keyStorePassword
         );
 
-        return sslContext;
+        // Load the certificates the server trusts.
+        KeyStore trustStore = loadKeyStore(
+                trustStorePath,
+                trustStorePassword
+        );
+
+        KeyManagerFactory keyManagerFactory =
+                createKeyManagerFactory(
+                        keyStore,
+                        keyStorePassword
+                );
+
+        TrustManagerFactory trustManagerFactory =
+                createTrustManagerFactory(trustStore);
+
+        return createSslContext(
+                keyManagerFactory,
+                trustManagerFactory
+        );
     }
 
     // Step 6
     public static SSLContext createClientContext(
+            String keyStorePath,
+            char[] keyStorePassword,
             String trustStorePath,
-            char[] password
+            char[] trustStorePassword
     ) throws GeneralSecurityException, IOException {
 
-        KeyStore trustStore = loadKeyStore(trustStorePath, password);  // note: A keystore and a truststore can both be represented by Java's Keystore class
+        KeyStore keyStore = loadKeyStore(
+                keyStorePath,
+                keyStorePassword
+        );
+
+        KeyStore trustStore = loadKeyStore(
+                trustStorePath,
+                trustStorePassword
+        );
+
+        KeyManagerFactory keyManagerFactory =
+                createKeyManagerFactory(
+                        keyStore,
+                        keyStorePassword
+                );
 
         TrustManagerFactory trustManagerFactory =
                 createTrustManagerFactory(trustStore);
@@ -47,7 +74,7 @@ public class TlsContextFactory {
         SSLContext sslContext = SSLContext.getInstance("TLS");
 
         sslContext.init(
-                null,                               // Who am I?       → nobody / no client certificate
+                keyManagerFactory.getKeyManagers(),     // Who am I? -> client identity
                 trustManagerFactory.getTrustManagers(), // Who do I trust? → our server certificate
                 null                                    // Randomness      → defaults
         );

@@ -24,6 +24,7 @@ public class MessageServer {
          ExecutorService clientPool = Executors.newFixedThreadPool(4);
 
          String keyStorePasswordValue = System.getenv("SECURE_MESSAGE_KEYSTORE_PASSWORD");
+         String trustStorePasswordValue = System.getenv("SECURE_MESSAGE_TRUSTSTORE_PASSWORD");
 
          if (keyStorePasswordValue ==null || keyStorePasswordValue.isBlank()) {
              System.err.println(
@@ -32,16 +33,28 @@ public class MessageServer {
              return;
          }
 
+         if (trustStorePasswordValue == null || trustStorePasswordValue.isBlank()) {
+             System.err.println(
+                     "SECURE_MESSAGE_TRUSTSTORE_PASSWORD environment variable is not set."
+             );
+             return;
+         }
+
          char[] keyStorePassword = keyStorePasswordValue.toCharArray();
+         char[] trustStorePassword = trustStorePasswordValue.toCharArray();
 
          String keyStorePath = Path.of(System.getProperty("user.dir"), "security", "server-keystore.p12").toString();
+
+         String trustStorePath = Path.of(System.getProperty("user.dir"), "security", "server-truststore.p12").toString();
 
          SSLContext sslContext;  //will contain our TLS configuration
 
          try{
              sslContext = TlsContextFactory.createServerContext(
                      keyStorePath,
-                     keyStorePassword
+                     keyStorePassword,
+                     trustStorePath,
+                     trustStorePassword
              );
          } catch (GeneralSecurityException | IOException exception) {
              System.err.println(
@@ -55,6 +68,7 @@ public class MessageServer {
 
          try (SSLServerSocket serverSocket = (SSLServerSocket) socketFactory.createServerSocket(5000)){ //listen on port 5000, managed resource
 
+             serverSocket.setNeedClientAuth(true);  //the client must prove its identity with a certificate that my TrustManager accepts
              System.out.println("Message server listening on port 5000");
 
              while (true) {  //keep accepting connections
